@@ -77,6 +77,14 @@ module PrometheusExporter::Instrumentation
       metric[:major_gc_ops_total] = stat[:major_gc_count]
       metric[:minor_gc_ops_total] = stat[:minor_gc_count]
       metric[:allocated_objects_total] = stat[:total_allocated_objects]
+      metric[:freed_objects_total] = stat[:total_freed_objects]
+      metric[:total_freed_pages] = stat[:total_freed_pages]
+      metric[:total_allocated_pages] = stat[:total_allocated_pages]
+      metric[:heap_marked_slots] = stat[:heap_marked_slots]
+      metric[:heap_tomb_pages] = stat[:heap_tomb_pages]
+      metric[:heap_eden_pages] = stat[:heap_eden_pages]
+      metric[:heap_allocated_pages] = stat[:heap_allocated_pages]
+
     end
 
     def collect_v8_stats(metric)

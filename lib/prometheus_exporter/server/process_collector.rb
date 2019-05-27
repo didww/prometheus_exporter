@@ -7,6 +7,10 @@ module PrometheusExporter::Server
     PROCESS_GAUGES = {
       heap_free_slots: "Free ruby heap slots.",
       heap_live_slots: "Used ruby heap slots.",
+      heap_allocated_pages: 'Used rubye heap pages',
+      heap_eden_pages: "Pages contain no live objects, and so have completely free slots.",
+      heap_tomb_pages: "Heap pages which contain at least one live object in them",
+      heap_marked_slots: "Used ruby heap marked slots",
       v8_heap_size: "Total JavaScript V8 heap size (bytes).",
       v8_used_heap_size: "Total used JavaScript V8 heap size (bytes).",
       v8_physical_size: "Physical size consumed by V8 heaps.",
@@ -18,6 +22,9 @@ module PrometheusExporter::Server
       major_gc_ops_total: "Major GC operations by process.",
       minor_gc_ops_total: "Minor GC operations by process.",
       allocated_objects_total: "Total number of allocated objects by process.",
+      freed_objects_total: "Total number of freed objects by process.",
+      total_allocated_pages: "Total number of allocated pages by process.",
+      total_freed_pages: "Total number of freed pages by process.",
     }
 
     def initialize
