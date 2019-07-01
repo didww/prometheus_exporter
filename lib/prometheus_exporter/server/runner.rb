@@ -3,6 +3,10 @@
 require 'prometheus_exporter/client'
 require_relative '../instrumentation/unicorn'
 
+require 'rbtrace'
+require 'objspace'
+ObjectSpace.trace_object_allocations_start
+
 module PrometheusExporter::Server
   class RunnerException < StandardError; end
   class WrongInheritance < RunnerException; end
