@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "mini_racer", "~> 0.1"
   spec.add_development_dependency "guard-minitest", "~> 2.0"
   spec.add_development_dependency "oj", "~> 3.0"
+  spec.add_development_dependency "rbtrace"
   spec.add_development_dependency "rack-test", "~> 0.8.3"
   spec.add_development_dependency "minitest-stub-const", "~> 0.6"
   if !RUBY_ENGINE == 'jruby'
