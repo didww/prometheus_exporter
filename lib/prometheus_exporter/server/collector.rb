@@ -9,7 +9,7 @@ module PrometheusExporter::Server
       @metrics = {}
       @mutex = Mutex.new
       @collectors = {}
-      @json_serializer = PrometheusExporter.detect_json_serializer(json_serializer)
+      @json_serializer = JSON #PrometheusExporter.detect_json_serializer(json_serializer)
       register_collector(WebCollector.new)
       register_collector(ProcessCollector.new)
       register_collector(SidekiqCollector.new)
