@@ -3,7 +3,6 @@
 module PrometheusExporter::Server
 
   class Collector < CollectorBase
-
     def initialize(json_serializer: nil)
       @process_metrics = []
       @metrics = {}
@@ -17,6 +16,7 @@ module PrometheusExporter::Server
       register_collector(PumaCollector.new)
       register_collector(HutchCollector.new)
       register_collector(UnicornCollector.new)
+      @logger = Logger.new($stderr)
     end
 
     def register_collector(collector)
@@ -24,6 +24,7 @@ module PrometheusExporter::Server
     end
 
     def process(str)
+      @logger.info{ "process method called with: #{str}" }
       process_hash(@json_serializer.parse(str))
     end
 
