@@ -2,6 +2,9 @@
 
 module PrometheusExporter::Server
   class PumaCollector < TypeCollector
+    
+    MAX_PROCESS_METRIC_AGE = 30
+    
     PUMA_GAUGES = {
       workers_total: "Number of puma workers.",
       booted_workers_total: "Number of puma workers booted.",
@@ -47,7 +50,16 @@ module PrometheusExporter::Server
     end
 
     def collect(obj)
-      @puma_metrics << obj
+      now = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)
+
+      obj["created_at"] = now
+
+      @puma_metrics .delete_if do |current|
+        (obj["pid"] == current["pid"] && obj["hostname"] == current["hostname"]) ||
+            (current["created_at"] + MAX_PROCESS_METRIC_AGE < now)
+      end
+
+      @puma_metrics  << obj
     end
   end
 end
