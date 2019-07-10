@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'logger'
 module PrometheusExporter::Server
 
   class Collector < CollectorBase
