@@ -2,6 +2,25 @@
 
 module PrometheusExporter::Server
   class WebCollector < TypeCollector
+    DURATION_BUCKETS = [
+        90,
+        60,
+        45,
+        30,
+        15,
+        10,
+        5,
+        2.5,
+        1,
+        0.5,
+        0.25,
+        0.1,
+        0.05,
+        0.025,
+        0.01,
+        0.005
+    ].freeze
+
     def initialize
       @metrics = {}
     end
@@ -28,24 +47,28 @@ module PrometheusExporter::Server
           "Total HTTP requests from web app."
         )
 
-        @metrics["http_duration_seconds"] = @http_duration_seconds = PrometheusExporter::Metric::Summary.new(
+        @metrics["http_duration_seconds"] = @http_duration_seconds = PrometheusExporter::Metric::Histogram.new(
           "http_duration_seconds",
-          "Time spent in HTTP reqs in seconds."
+          "Time spent in HTTP reqs in seconds.",
+          buckets: DURATION_BUCKETS
         )
 
-        @metrics["http_redis_duration_seconds"] = @http_redis_duration_seconds = PrometheusExporter::Metric::Summary.new(
+        @metrics["http_redis_duration_seconds"] = @http_redis_duration_seconds = PrometheusExporter::Metric::Histogram.new(
           "http_redis_duration_seconds",
-          "Time spent in HTTP reqs in Redis, in seconds."
+          "Time spent in HTTP reqs in Redis, in seconds.",
+          buckets: DURATION_BUCKETS
         )
 
-        @metrics["http_sql_duration_seconds"] = @http_sql_duration_seconds = PrometheusExporter::Metric::Summary.new(
+        @metrics["http_sql_duration_seconds"] = @http_sql_duration_seconds = PrometheusExporter::Metric::Histogram.new(
           "http_sql_duration_seconds",
-          "Time spent in HTTP reqs in SQL in seconds."
+          "Time spent in HTTP reqs in SQL in seconds.",
+          buckets: DURATION_BUCKETS
         )
 
-        @metrics["http_queue_duration_seconds"] = @http_queue_duration_seconds = PrometheusExporter::Metric::Summary.new(
+        @metrics["http_queue_duration_seconds"] = @http_queue_duration_seconds = PrometheusExporter::Metric::Histogram.new(
           "http_queue_duration_seconds",
-          "Time spent queueing the request in load balancer in seconds."
+          "Time spent queueing the request in load balancer in seconds.",
+          buckets: DURATION_BUCKETS
         )
       end
     end
