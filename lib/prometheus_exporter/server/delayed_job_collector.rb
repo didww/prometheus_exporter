@@ -16,13 +16,13 @@ module PrometheusExporter::Server
       @delayed_job_duration_seconds.observe(obj["duration"], labels)
       @delayed_jobs_total.observe(1, labels)
       @delayed_failed_jobs_total.observe(1, labels) if !obj["success"]
-      @delayed_jobs_max_attempts_reached_total.observe(1) if obj["attempts"] >= obj["max_attempts"]
-      @delayed_job_duration_seconds_summary.observe(obj["duration"])
-      @delayed_job_duration_seconds_summary.observe(obj["duration"], status: "success") if obj["success"]
-      @delayed_job_duration_seconds_summary.observe(obj["duration"], status: "failed")  if !obj["success"]
-      @delayed_job_attempts_summary.observe(obj["attempts"]) if obj["success"]
-      @delayed_jobs_enqueued.observe(obj["enqueued"])
-      @delayed_jobs_pending.observe(obj["pending"])
+      @delayed_jobs_max_attempts_reached_total.observe(1, labels) if obj["attempts"] >= obj["max_attempts"]
+      @delayed_job_duration_seconds_summary.observe(obj["duration"], labels)
+      @delayed_job_duration_seconds_summary.observe(obj["duration"], labels.merge(status: "success")) if obj["success"]
+      @delayed_job_duration_seconds_summary.observe(obj["duration"], labels.merge(status: "failed"))  if !obj["success"]
+      @delayed_job_attempts_summary.observe(obj["attempts"], labels) if obj["success"]
+      @delayed_jobs_enqueued.observe(obj["enqueued"], labels)
+      @delayed_jobs_pending.observe(obj["pending"], labels)
     end
 
     def metrics
