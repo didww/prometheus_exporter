@@ -11,7 +11,10 @@ class PrometheusExporter::Middleware
     @client = config[:client] || PrometheusExporter::Client.default
 
     if config[:instrument]
-      if defined? Redis::Client
+      if defined?(Redis::VERSION) && Gem::Version.new(Redis::VERSION) >= Gem::Version.new('5.0.0')
+        # redis 5 moved the transport to redis-client: Redis::Client has neither call nor
+        # call_pipeline any more, and this fork predates the RedisClient middleware hook.
+      elsif defined? Redis::Client
         MethodProfiler.patch(Redis::Client, [:call, :call_pipeline], :redis)
       end
       if defined? PG::Connection

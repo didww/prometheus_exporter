@@ -70,4 +70,32 @@ class PrometheusExporterMiddlewareTest < Minitest::Test
     refute_nil client.last_send
     assert_nil client.last_send[:queue_time]
   end
+
+  def test_does_not_patch_redis_5_client
+    with_fake_redis('5.4.1', instance_methods: []) do |client_class|
+      PrometheusExporter::Middleware.new(inner_app, client: client, instrument: true)
+      refute client_class.method_defined?(:call__mp_unpatched)
+    end
+  end
+
+  def test_patches_redis_4_client
+    with_fake_redis('4.8.1', instance_methods: [:call, :call_pipeline]) do |client_class|
+      PrometheusExporter::Middleware.new(inner_app, client: client, instrument: true)
+      assert client_class.method_defined?(:call__mp_unpatched)
+    end
+  end
+
+  private
+
+  def with_fake_redis(version, instance_methods:)
+    client_class = Class.new
+    instance_methods.each { |name| client_class.define_method(name) { |*| } }
+    redis = Module.new
+    redis.const_set(:VERSION, version)
+    redis.const_set(:Client, client_class)
+    Object.const_set(:Redis, redis)
+    yield client_class
+  ensure
+    Object.send(:remove_const, :Redis)
+  end
 end
